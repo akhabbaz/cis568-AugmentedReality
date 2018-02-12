@@ -28,7 +28,7 @@ public class PCNetwork_Cube : Photon.PunBehaviour
         {
             result += characters[Random.Range(0, characters.Length)];
         }
-
+        result = "room1";
         return result;
     }
 
@@ -41,7 +41,7 @@ public class PCNetwork_Cube : Photon.PunBehaviour
     public override void OnJoinedLobby()
     {
         //PhotonNetwork.CreateRoom(null);
-        PhotonNetwork.CreateRoom(roomName);
+	PhotonNetwork.CreateRoom(roomName);
     }
 
     // Look-1.b: We are not doing anything in the functions below
@@ -53,6 +53,7 @@ public class PCNetwork_Cube : Photon.PunBehaviour
     }
     public override void OnCreatedRoom()
     {
-        base.OnCreatedRoom();
+	 Debug.Log("created room!");
+	 base.OnCreatedRoom();
     }
 }
