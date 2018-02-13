@@ -32,8 +32,11 @@ public class MobileNetwork_Cube : Photon.PunBehaviour
 	    Debug.Log("Joined Random Room Success");
 	    GameObject obj = PhotonNetwork.Instantiate("PhoneCube", new Vector3(0,0,0), 
 			    Quaternion.identity, 0);
+	   
 
-          var cube = GetComponent<GyroController>().ControlledObject = obj;
+        GetComponent<GyroController>().ControlledObject = obj;
+
+	  
 
             //PhoneCube cube = GetComponent<GyroController>().ControlledObject = cube;
 	    base.OnJoinedRoom();

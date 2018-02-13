@@ -64,7 +64,9 @@ public class GyroController : MonoBehaviour
             // TODO-1.d & TODO-2.a:
             //   rotate the camera or cube based on qRefObject, qRefGyro and current 
             //   data from gyroscope
-            //controlledObject.transform.rotation = 
+            Quaternion deltaR = Quaternion.Inverse(qRefGyro) * ConvertRotation(gyro.attitude);
+            
+            controlledObject.transform.rotation = qRefObject * deltaR;
         }
     }
 

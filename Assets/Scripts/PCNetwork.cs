@@ -46,6 +46,7 @@ public class PCNetwork : Photon.PunBehaviour
         {
             result += characters[Random.Range(0, characters.Length)];
         }
+	result = "Red Room";
 
         return result;
     }
