@@ -7,7 +7,6 @@ public class MobileNetwork_Cube : Photon.PunBehaviour
     //   it yourself. But you can also list the rooms or require player to enter
     //   the room name in case there are more people playing
     //   your game - though it is not required for the assignment
-    string roomName;
     void Start()
     {
 	    PhotonNetwork.ConnectUsingSettings("0.1");
@@ -31,16 +30,18 @@ public class MobileNetwork_Cube : Photon.PunBehaviour
     public override void OnJoinedRoom()
     {
 	    Debug.Log("Joined Random Room Success");
-	    //GameObject obj = PhotonNetwork.Instantiate("PhoneCube", new Vector3(0,0,0), 
-	//		    Quaternion.identity, 0); 
+	    GameObject obj = PhotonNetwork.Instantiate("PhoneCube", new Vector3(0,0,0), 
+			    Quaternion.identity, 0);
+
+          var cube = GetComponent<GyroController>().ControlledObject = obj;
+
+            //PhoneCube cube = GetComponent<GyroController>().ControlledObject = cube;
 	    base.OnJoinedRoom();
     }
 
     //public override void OnJoinedRoom()
     //{
     //    //TODO-1.c: use PhotonNetwork.Instantiate to create a "PhoneCube" across the network
-    //    var cube =
-    //    GetComponent<GyroController>().ControlledObject = cube;
     //}
 
 
