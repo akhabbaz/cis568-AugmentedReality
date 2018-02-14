@@ -17,6 +17,9 @@ public class GyroController : MonoBehaviour
 
     Quaternion qRefObject = Quaternion.identity;
     Quaternion qRefGyro = Quaternion.identity;
+    // OrientationGyro accounts for if the x of the gyro is different than
+    // the x of the cube display.
+    Quaternion qOrientationGyro = Quaternion.identity;
     Gyroscope gyro;
 
     GameObject controlledObject;
@@ -52,7 +55,7 @@ public class GyroController : MonoBehaviour
     // Your device may require a different conversion
     private static Quaternion ConvertRotation(Quaternion q)
     {
-        return new Quaternion(q.x, q.y, -q.z, -q.w);
+        return new Quaternion(q.x, q.y,  -q.z, -q.w);
     }
 
 

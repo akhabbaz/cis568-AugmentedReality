@@ -28,6 +28,7 @@ public class PCNetwork_Cube : Photon.PunBehaviour
         {
             result += characters[Random.Range(0, characters.Length)];
         }
+        result = "CubeRoom";
         return result;
     }
 
