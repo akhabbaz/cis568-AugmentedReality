@@ -2,6 +2,7 @@
 Library/
 ProjectSettings/
 Temp/
+Build/
 *.csproj
 *.unityproj
 *.sln

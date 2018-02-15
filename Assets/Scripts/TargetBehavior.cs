@@ -52,6 +52,7 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
                 // Recalibrate reference quaternions at GyroController
                 //   and switch the Control of the camera between Vuforia and GyroController.
                 // You may want to toggle GyroController.Paused .
+		CameraGyro.ResetOrientation();
                 tracked = true;
 
 
