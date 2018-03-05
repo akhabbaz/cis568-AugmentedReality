@@ -1338,6 +1338,7 @@ GameObject:
   - component: {fileID: 1893787673}
   - component: {fileID: 1893787672}
   - component: {fileID: 1893787671}
+  - component: {fileID: 1893787675}
   - component: {fileID: 1893787670}
   - component: {fileID: 1893787669}
   m_Layer: 0
@@ -1443,3 +1444,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &1893787675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1893787668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 427aa9be5b8536c4485bbb13866349ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TrackButton: {fileID: 1397268013}
+  ShotTopButton: {fileID: 447976506}
+  CameraGyro: {fileID: 0}
