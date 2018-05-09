@@ -1,6 +1,5 @@
 # Unity gitignore Start
 Library/
-ProjectSettings/
 Temp/
 Build/
 apkFile/
