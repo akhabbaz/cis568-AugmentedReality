@@ -1,9 +1,9 @@
 # Unity gitignore Start
 Library/
-ProjectSettings/
 Temp/
 Build/
 *.csproj
 *.unityproj
 *.sln
+*.userprefs
 #Unity gitignore end
