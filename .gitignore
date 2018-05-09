@@ -6,5 +6,6 @@ apkFile/
 *.csproj
 *.unityproj
 *.sln
+*.vs
 *.userprefs
 #Unity gitignore end
