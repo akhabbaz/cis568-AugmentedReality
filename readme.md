@@ -18,3 +18,30 @@ the operating system.  Now Android studio failed to build and deploy to the kind
 while at home.  The error is that Gradle can't find build tool 28.0.0 but that is
 installed.  I will check again and try to finish this tomorrow.
 
+
+Using an HDFire as a Android Device
+-----------------------------------
+
+The Java set up is as described in the environment set-up. Android studio needs to be
+set up for each user on the computer so it should be installed for the user that is
+doing the work, not for the administrator and not one install for all.  I have an
+HDFIre 10 and that is perhaps 4 years old.  Now I got communication to work in
+Android studio with Android 8.1 (oreo), the latest version.  In Android Studio I
+updated all the components when prompted.  I did not install the virtual environment.
+In the end in Android Studio the default project says synced successfully and it
+build.  In order to communicate with  an Amazon HD fire, one has
+to follow Amazon's instructions on Connecting to Fire through Android Debug Bridge
+(ADB).  One has to install a new USB driver.  One can then test whether the kindle
+
+Here is the link:
+https://developer.amazon.com/docs/fire-tablets/ft-set-up-your-kindle-fire-tablet-for-testing.html
+
+communicates with the computer or not.  With a USB cable connected the serial number
+should show up.  Through ADB, one can also turn off the USB
+and send the application wirelessly through the network connection.  The USB transfer
+is faster though.  On the device one should in Developer options Enable ADB, so the
+kindle works for developers.  Once it is installed it needs to be stopped and
+restarted so I did that under settings  through apps and games -> manage apps ->
+"Force Stop".   Unity essentially calls the Android SDK so it only reports errors.
+If successful during build, then you will see transfer APK to "serial number of
+device.
