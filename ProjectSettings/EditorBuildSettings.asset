@@ -6,5 +6,5 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/PaintBall_Mobile.unity
-    guid: 347a3d0213f4b0a439a97ec2b2fbc65a
+    path: Assets/PaintBall_PC.unity
+    guid: 20e7904821e3b4a49a9022d38d60b5b3

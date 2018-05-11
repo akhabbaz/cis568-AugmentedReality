@@ -1527,6 +1527,7 @@ GameObject:
   - component: {fileID: 1893787675}
   - component: {fileID: 1893787670}
   - component: {fileID: 1893787669}
+  - component: {fileID: 1893787676}
   m_Layer: 0
   m_Name: ImageTarget
   m_TagString: Untagged
@@ -1644,3 +1645,14 @@ MonoBehaviour:
   TrackButton: {fileID: 1397268013}
   ShotTopButton: {fileID: 447976506}
   CameraGyro: {fileID: 0}
+--- !u!114 &1893787676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1893787668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b39f567ec728f4bbfcae9a23ebbac8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

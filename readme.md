@@ -45,3 +45,15 @@ restarted so I did that under settings  through apps and games -> manage apps ->
 "Force Stop".   Unity essentially calls the Android SDK so it only reports errors.
 If successful during build, then you will see transfer APK to "serial number of
 device.
+
+ADB has nice tools for debugging that can be used.  
+For example adb logcat -s Unity PackageManager dalvikvm DEBUG
+With a USB cable connected this gives the debug log and unity errors.
+adb logcat -c will clear the log.
+
+Android studio can run and stop the apk file from Android Studio.  What I find useful
+is to build the PC version as a stand alone and leave it running.  Build the Android
+version and use Android Studio to run and stop the app. The adb logcat -s line shows
+all the debug errors.
+
+

@@ -28,6 +28,15 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
     // Use this for initialization
     void Start () {
         CameraGyro = GetComponent<GyroController>();
+        if (CameraGyro == null)
+        {
+            Debug.Log("Camera Gyro is null");
+        }
+        else
+        {
+            Debug.Log("Camera Gyro is found");
+
+        }
         CameraGyro.Paused = true;
         CameraGyro.ControlledObject = GameObject.FindWithTag("ARCamera");
        
@@ -52,17 +61,16 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
                 // Recalibrate reference quaternions at GyroController
                 //   and switch the Control of the camera between Vuforia and GyroController.
                 // You may want to toggle GyroController.Paused .
-		CameraGyro.ResetOrientation();
+		        CameraGyro.ResetOrientation();
                 tracked = true;
-
-
                 TrackButton.image.color = new Color(0.4f, 1, 0.1f, 0.5f);
                 break;
             case TrackableBehaviour.Status.EXTENDED_TRACKED:
                 // Target not in camera, but Vuforia can still calculate position and orientation
                 //   and update ARCamera.
                 // TODO-2.b
-                tracked = false;
+                tracked = true;
+
 
                 TrackButton.image.color = new Color(0.7f, 0.5f, 0.1f, 0.5f);
                 break;
