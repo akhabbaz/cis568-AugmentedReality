@@ -10,6 +10,7 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
     public Button TrackButton;
     public Button ShotTopButton;
     public GyroController CameraGyro;
+    private TrackableBehaviour mTrackableBehaviour;
     bool tracked = false;
 
 
@@ -53,7 +54,7 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
             Debug.Log("Ar Camera not attached.");
         }
 
-        var mTrackableBehaviour = GetComponent<TrackableBehaviour>();
+        mTrackableBehaviour = GetComponent<TrackableBehaviour>();
         if (mTrackableBehaviour)
         {
             mTrackableBehaviour.RegisterTrackableEventHandler(this);
@@ -62,39 +63,108 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
         TrackButton.onClick.AddListener(ResumeTracking);
     }
 
-    public void OnTrackableStateChanged(TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus)
+    public void OnTrackableStateChanged(
+        TrackableBehaviour.Status previousStatus,
+        TrackableBehaviour.Status newStatus)
     {
-        Debug.Log("Switch State");
-        switch (newStatus)
+        Debug.Log("Switch State prior: " + previousStatus + 
+                 " new : " + newStatus);
+        if (newStatus == TrackableBehaviour.Status.DETECTED ||
+            newStatus == TrackableBehaviour.Status.TRACKED ||
+            newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED)
         {
-            case TrackableBehaviour.Status.TRACKED:
-                // Target in camera
-                // TODO-2.b 
-                // Recalibrate reference quaternions at GyroController
-                //   and switch the Control of the camera between Vuforia and GyroController.
-                // You may want to toggle GyroController.Paused .
-		        CameraGyro.ResetOrientation();
-                tracked = true;
-                CameraGyro.Paused = true;
+            Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
+            OnTrackingFound();
                 TrackButton.image.color = new Color(0.4f, 1, 0.7f, 0.5f);
-                break;
-            case TrackableBehaviour.Status.EXTENDED_TRACKED:
-                // Target not in camera, but Vuforia can still calculate position and orientation
-                //   and update ARCamera.
-                // TODO-2.b
-                CameraGyro.Paused = false;
-                tracked = true;
-
-
-                TrackButton.image.color = new Color(0.7f, 0.5f, 0.1f, 0.5f);
-                break;
-            default:
-                tracked = false;
-                // TODO-2.b
-
-                TrackButton.image.color = new Color(1, 0.1f, 0.1f, 0.5f);
-                break;
         }
-        
+        else if (previousStatus == TrackableBehaviour.Status.TRACKED &&
+                 newStatus == TrackableBehaviour.Status.NOT_FOUND)
+        {
+            Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
+            OnTrackingLost();
+        }
+        else
+        {
+            // For combo of previousStatus=UNKNOWN + newStatus=UNKNOWN|NOT_FOUND
+            // Vuforia is starting, but tracking has not been lost or found yet
+            // Call OnTrackingLost() to hide the augmentations
+            OnTrackingLost();
+                TrackButton.image.color = new Color(1, 0.1f, 0.1f, 0.5f);
+        }
+    }
+//    public void OnTrackableStateChanged(TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus)
+//    {
+//        switch (newStatus)
+//        {
+//            case TrackableBehaviour.Status.TRACKED:
+//                // Target in camera
+//                // TODO-2.b 
+//                // Recalibrate reference quaternions at GyroController
+//                //   and switch the Control of the camera between Vuforia and GyroController.
+//                // You may want to toggle GyroController.Paused .
+//		        CameraGyro.ResetOrientation();
+//                tracked = true;
+//                CameraGyro.Paused = true;
+//                TrackButton.image.color = new Color(0.4f, 1, 0.7f, 0.5f);
+//                PauseTracking();
+//                break;
+//            case TrackableBehaviour.Status.EXTENDED_TRACKED:
+//                // Target not in camera, but Vuforia can still calculate position and orientation
+//                //   and update ARCamera.
+//                // TODO-2.b
+//                CameraGyro.Paused = false;
+//                tracked = true;
+//                PauseTracking();
+//
+//                TrackButton.image.color = new Color(0.7f, 0.5f, 0.1f, 0.5f);
+//                break;
+//            default:
+//                tracked = false;
+//                // TODO-2.b
+//                ResumeTracking(); 
+//                TrackButton.image.color = new Color(1, 0.1f, 0.1f, 0.5f);
+//                break;
+//        }
+//        
+//    }
+    protected virtual void OnTrackingFound()
+    {
+        Debug.Log("Tracking Found");
+        var rendererComponents = GetComponentsInChildren<Renderer>(true);
+        var colliderComponents = GetComponentsInChildren<Collider>(true);
+        var canvasComponents = GetComponentsInChildren<Canvas>(true);
+
+        // Enable rendering:
+        foreach (var component in rendererComponents)
+            component.enabled = true;
+
+        // Enable colliders:
+        foreach (var component in colliderComponents)
+            component.enabled = true;
+
+        // Enable canvas':
+        foreach (var component in canvasComponents)
+            component.enabled = true;
+    }
+
+
+    protected virtual void OnTrackingLost()
+    {
+        Debug.Log("Tracking Lost");
+        var rendererComponents = GetComponentsInChildren<Renderer>(true);
+        var colliderComponents = GetComponentsInChildren<Collider>(true);
+        var canvasComponents = GetComponentsInChildren<Canvas>(true);
+
+        // Disable rendering:
+        foreach (var component in rendererComponents)
+            component.enabled = false;
+
+        // Disable colliders:
+        foreach (var component in colliderComponents)
+            component.enabled = false;
+
+        // Disable canvas':
+        foreach (var component in canvasComponents)
+            component.enabled = false;
     }
 }

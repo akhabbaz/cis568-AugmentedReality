@@ -56,4 +56,12 @@ is to build the PC version as a stand alone and leave it running.  Build the And
 version and use Android Studio to run and stop the app. The adb logcat -s line shows
 all the debug errors.
 
+What I found critical was not to add Build Tools for the latest API version.  Gradle
+would not compile to android then.  My HDFIRE uses the android API 22 so I built for
+that version.  I uninstalled all build tools and compile and deploy worked. 
+
+Also I think you can't deploy this without doing so with unity.  I think libraries
+are also used in addition to the apk.  Every time I deployed successfully I did it in
+Unity.
+
 

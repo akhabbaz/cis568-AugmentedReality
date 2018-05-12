@@ -1613,7 +1613,7 @@ MonoBehaviour:
   mPreserveChildSize: 0
   mInitializedInEditor: 1
   mDataSetPath: Vuforia/VuforiaMars_Images.xml
-  mExtendedTracking: 0
+  mExtendedTracking: 1
   mAspectRatio: 0.5
   mImageTargetType: 0
   mWidth: 1.0956824
