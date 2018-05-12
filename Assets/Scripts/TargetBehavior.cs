@@ -17,12 +17,14 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
     {
         Tracker imageTracker = TrackerManager.Instance.GetTracker<ObjectTracker>();
         imageTracker.Start();
+        Debug.Log("Resume Tracking");
     }
 
     void PauseTracking()
     {
         Tracker imageTracker = TrackerManager.Instance.GetTracker<ObjectTracker>();
         imageTracker.Stop();
+        Debug.Log("Pause Tracking");
     }
 
     // Use this for initialization
@@ -38,9 +40,18 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
 
         }
         CameraGyro.Paused = true;
-        CameraGyro.ControlledObject = GameObject.FindWithTag("ARCamera");
+        CameraGyro.ControlledObject = GameObject.FindWithTag("MainCamera");
        
-        Debug.Assert(CameraGyro.ControlledObject != null); 
+        //Debug.Assert(CameraGyro.ControlledObject != null); 
+        if (CameraGyro.ControlledObject != null)
+        {
+            Debug.Log("AR Camera found");
+            Debug.Log(CameraGyro.ControlledObject.transform);
+        }
+        else
+        {
+            Debug.Log("Ar Camera not attached.");
+        }
 
         var mTrackableBehaviour = GetComponent<TrackableBehaviour>();
         if (mTrackableBehaviour)
@@ -53,6 +64,7 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
 
     public void OnTrackableStateChanged(TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus)
     {
+        Debug.Log("Switch State");
         switch (newStatus)
         {
             case TrackableBehaviour.Status.TRACKED:
@@ -63,12 +75,14 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
                 // You may want to toggle GyroController.Paused .
 		        CameraGyro.ResetOrientation();
                 tracked = true;
-                TrackButton.image.color = new Color(0.4f, 1, 0.1f, 0.5f);
+                CameraGyro.Paused = true;
+                TrackButton.image.color = new Color(0.4f, 1, 0.7f, 0.5f);
                 break;
             case TrackableBehaviour.Status.EXTENDED_TRACKED:
                 // Target not in camera, but Vuforia can still calculate position and orientation
                 //   and update ARCamera.
                 // TODO-2.b
+                CameraGyro.Paused = false;
                 tracked = true;
 
 

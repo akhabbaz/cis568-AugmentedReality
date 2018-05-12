@@ -35,6 +35,7 @@ public class GyroController : MonoBehaviour
         gyro = Input.gyro;
         gyro.enabled = true;
         gyro.updateInterval = 0.01f;
+        Debug.Log("Gyro initialized update interval = " + gyro.updateInterval);
     }
 
     void OnGUI()
