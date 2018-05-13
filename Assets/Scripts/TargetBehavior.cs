@@ -9,6 +9,7 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
 
     public Button TrackButton;
     public Button ShotTopButton;
+    public Button Gyro;
     public GyroController CameraGyro;
     private TrackableBehaviour mTrackableBehaviour;
     bool tracked = false;
@@ -26,6 +27,10 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
         Tracker imageTracker = TrackerManager.Instance.GetTracker<ObjectTracker>();
         imageTracker.Stop();
         Debug.Log("Pause Tracking");
+    }
+    void GyroOn()
+    {
+        CameraGyro.Paused = false;
     }
 
     // Use this for initialization
