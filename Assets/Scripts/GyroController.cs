@@ -17,9 +17,6 @@ public class GyroController : MonoBehaviour
 
     Quaternion qRefObject = Quaternion.identity;
     Quaternion qRefGyro = Quaternion.identity;
-    // OrientationGyro accounts for if the x of the gyro is different than
-    // the x of the cube display.
-    Quaternion qOrientationGyro = Quaternion.identity;
     Gyroscope gyro;
 
     GameObject controlledObject;

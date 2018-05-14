@@ -1523,10 +1523,10 @@ GameObject:
   - component: {fileID: 1893787674}
   - component: {fileID: 1893787673}
   - component: {fileID: 1893787671}
+  - component: {fileID: 1893787676}
   - component: {fileID: 1893787675}
   - component: {fileID: 1893787670}
   - component: {fileID: 1893787669}
-  - component: {fileID: 1893787676}
   - component: {fileID: 1893787677}
   - component: {fileID: 1893787672}
   m_Layer: 0
@@ -1668,11 +1668,11 @@ MonoBehaviour:
   mPreserveChildSize: 0
   mInitializedInEditor: 1
   mDataSetPath: Vuforia/VuforiaMars_Images.xml
-  mExtendedTracking: 0
+  mExtendedTracking: 1
   mAspectRatio: 1.7272727
   mImageTargetType: 0
-  mWidth: 1.736842
-  mHeight: 3
+  mWidth: 0.06985
+  mHeight: 0.12065
 --- !u!4 &1893787674
 Transform:
   m_ObjectHideFlags: 0
@@ -1681,7 +1681,7 @@ Transform:
   m_GameObject: {fileID: 1893787668}
   m_LocalRotation: {x: -0.5, y: 0.5, z: -0.5, w: 0.5}
   m_LocalPosition: {x: -0.27, y: -0.0899, z: 2.3285}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 0.12065, y: 0.12065, z: 0.12065}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 7

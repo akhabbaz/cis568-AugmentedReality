@@ -14,12 +14,14 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
     private TrackableBehaviour mTrackableBehaviour;
     bool tracked = false;
 
-
+   // This function should set the state to searching for the trackable
     void ResumeTracking()
     {
         Tracker imageTracker = TrackerManager.Instance.GetTracker<ObjectTracker>();
         imageTracker.Start();
-        Debug.Log("Resume Tracking");
+	GyroOff();
+	tracked = false;
+	OnTrackingLost();
     }
 
     void PauseTracking()
@@ -28,9 +30,25 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
         imageTracker.Stop();
         Debug.Log("Pause Tracking");
     }
+    // should reproduce the tracking Extended State if possible otherwise it goes to
+    // Tracking Lost State.
     void GyroOn()
     {
         CameraGyro.Paused = false;
+	PauseTracking();
+	Debug.Log("Gyro On");
+	if (tracked) 
+	{ 
+	   CameraGyro.ResetOrientation();
+	}
+	else {
+	    ResumeTracking();
+	}
+	    
+    }
+    void GyroOff()
+    {
+    	CameraGyro.Paused = true;
     }
 
     // Use this for initialization
@@ -52,7 +70,6 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
         if (CameraGyro.ControlledObject != null)
         {
             Debug.Log("AR Camera found");
-            Debug.Log(CameraGyro.ControlledObject.transform);
         }
         else
         {
@@ -66,6 +83,7 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
         }
         
         TrackButton.onClick.AddListener(ResumeTracking);
+	Gyro.onClick.AddListener(GyroOn);
     }
 
     //public void OnTrackableStateChanged(
@@ -109,32 +127,32 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
                 // Recalibrate reference quaternions at GyroController
                 //   and switch the Control of the camera between Vuforia and GyroController.
                 // You may want to toggle GyroController.Paused .
-		if (tracked == false){
-		        CameraGyro.ResetOrientation();
-		}
+                if (tracked == false){
+		            CameraGyro.ResetOrientation();
+			        Debug.Log("Orientation Reset");
+		        }
                 tracked = true;
-		Debug.Log("Tracked");
                 CameraGyro.Paused = true;
+		OnTrackingFound();
                 TrackButton.image.color = new Color(0.4f, 1, 0.7f, 0.5f);
                 break;
             case TrackableBehaviour.Status.EXTENDED_TRACKED:
                 // Target not in camera, but Vuforia can still calculate position and orientation
                 //   and update ARCamera.
                 // TODO-2.b
-		Debug.Log("Extended");
                 CameraGyro.Paused = false;
-                tracked = true;
                 PauseTracking();
+                Debug.Log("Extended Tracking");
                 TrackButton.image.color = new Color(0.7f, 0.5f, 0.1f, 0.5f);
                 break;
-            default:
-                tracked = false;
-		Debug.Log("Not Tracking");
-		CameraGyro.Paused = true;
-                // TODO-2.b
-                ResumeTracking(); 
-                TrackButton.image.color = new Color(1, 0.1f, 0.1f, 0.5f);
-                break;
+	    case TrackableBehaviour.Status.NOT_FOUND:
+	    case TrackableBehaviour.Status.UNKNOWN:
+	    case TrackableBehaviour.Status.DETECTED:
+        default:
+			OnTrackingLost();
+			CameraGyro.Paused = true;
+            TrackButton.image.color = new Color(1, 0.1f, 0.1f, 0.5f);
+            break;
         }
         
     }
