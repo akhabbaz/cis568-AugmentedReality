@@ -127,13 +127,11 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
                 // Recalibrate reference quaternions at GyroController
                 //   and switch the Control of the camera between Vuforia and GyroController.
                 // You may want to toggle GyroController.Paused .
-                if (tracked == false){
 		            CameraGyro.ResetOrientation();
 			        Debug.Log("Orientation Reset");
-		        }
                 tracked = true;
                 CameraGyro.Paused = true;
-		OnTrackingFound();
+		        OnTrackingFound();
                 TrackButton.image.color = new Color(0.4f, 1, 0.7f, 0.5f);
                 break;
             case TrackableBehaviour.Status.EXTENDED_TRACKED:
@@ -141,7 +139,6 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
                 //   and update ARCamera.
                 // TODO-2.b
                 CameraGyro.Paused = false;
-                PauseTracking();
                 Debug.Log("Extended Tracking");
                 TrackButton.image.color = new Color(0.7f, 0.5f, 0.1f, 0.5f);
                 break;
