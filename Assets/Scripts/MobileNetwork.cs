@@ -19,20 +19,17 @@ public class MobileNetwork : Photon.PunBehaviour
     {
 	    base.OnPhotonJoinRoomFailed(codeAndMsg);
     }
-    public override void OnJoinedRoom()
-    {
-	    Debug.Log("Joined Random Room Success");
-	    base.OnJoinedRoom();
-    }
 
     // TODO-2.a: the same as 1.b
     //   and join a room
 
 
-    //public override void OnJoinedRoom()
-    //{
-    //    GetComponent<MobileShooter>().Activate();
-    //}
+    public override void OnJoinedRoom()
+    {
+	    Debug.Log("Joined Random Room Success");
+	    base.OnJoinedRoom();
+	    GetComponent<MobileShooter>().Activate();
+    }
 
 
 }

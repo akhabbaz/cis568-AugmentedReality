@@ -29,13 +29,13 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
         Tracker imageTracker = TrackerManager.Instance.GetTracker<ObjectTracker>();
         imageTracker.Stop();
         Debug.Log("Pause Tracking");
+        GyroOn();
     }
     // should reproduce the tracking Extended State if possible otherwise it goes to
     // Tracking Lost State.
     void GyroOn()
     {
         CameraGyro.Paused = false;
-	PauseTracking();
 	Debug.Log("Gyro On");
 	if (tracked) 
 	{ 
@@ -83,7 +83,7 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
         }
         
         TrackButton.onClick.AddListener(ResumeTracking);
-	Gyro.onClick.AddListener(GyroOn);
+	Gyro.onClick.AddListener(PauseTracking);
     }
 
     //public void OnTrackableStateChanged(
@@ -127,11 +127,19 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
                 // Recalibrate reference quaternions at GyroController
                 //   and switch the Control of the camera between Vuforia and GyroController.
                 // You may want to toggle GyroController.Paused .
-		            CameraGyro.ResetOrientation();
-			        Debug.Log("Orientation Reset");
+		if (tracked) {
+		     CameraGyro.UpdateOrientation(1.0f);
+		     Debug.Log("Orientation updated");
+		}
+		else{
+			CameraGyro.ResetOrientation();
+			Debug.Log("Orientation Reset");
+		}
                 tracked = true;
                 CameraGyro.Paused = true;
+		if (!tracked) {
 		        OnTrackingFound();
+		}
                 TrackButton.image.color = new Color(0.4f, 1, 0.7f, 0.5f);
                 break;
             case TrackableBehaviour.Status.EXTENDED_TRACKED:
@@ -139,6 +147,7 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
                 //   and update ARCamera.
                 // TODO-2.b
                 CameraGyro.Paused = false;
+               // PauseTracking();
                 Debug.Log("Extended Tracking");
                 TrackButton.image.color = new Color(0.7f, 0.5f, 0.1f, 0.5f);
                 break;

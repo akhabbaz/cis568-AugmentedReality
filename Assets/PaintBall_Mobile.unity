@@ -1671,8 +1671,8 @@ MonoBehaviour:
   mExtendedTracking: 1
   mAspectRatio: 1.7272727
   mImageTargetType: 0
-  mWidth: 0.06985
-  mHeight: 0.12065
+  mWidth: 0.57894737
+  mHeight: 1
 --- !u!4 &1893787674
 Transform:
   m_ObjectHideFlags: 0
@@ -1681,7 +1681,7 @@ Transform:
   m_GameObject: {fileID: 1893787668}
   m_LocalRotation: {x: -0.5, y: 0.5, z: -0.5, w: 0.5}
   m_LocalPosition: {x: -0.27, y: -0.0899, z: 2.3285}
-  m_LocalScale: {x: 0.12065, y: 0.12065, z: 0.12065}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 7

@@ -82,6 +82,10 @@ public class MobileShooter : MonoBehaviour {
         Color color = Random.ColorHSV(0f, 1f, 0.5f, 1f, 0.5f, 1f, 1f, 1f);
         Vector3 color_v = new Vector3(color.r, color.g, color.b);
 
+	    GameObject ball = PhotonNetwork.Instantiate("ball", new Vector3(0,0,0), 
+			    Quaternion.identity, 0);
+        BallBehavior bb = ball.GetComponent<BallBehavior>();
+        bb.RPCInitialize(velocity, color_v);
         // TODO-2.c PhotonNetwork.Instantiate to shoot a ball!
         // You may want to initialize a RPC function call to RPCInitialize() 
         //   (See BallBehavior.cs) to set the velocity and color

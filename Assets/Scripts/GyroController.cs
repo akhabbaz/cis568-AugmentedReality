@@ -82,12 +82,11 @@ public class GyroController : MonoBehaviour
     }
 
     //// Possible helper function to smooth between gyro and Vuforia
-    //public void UpdateOrientation(float deltatime)
-    //{
-    //        float smooth = 1f;
-    //        qRefCam = Quaternion.Slerp(qRefCam, transform.rotation, smooth * deltatime);
-    //        qRefGyro = Quaternion.Slerp(qRefGyro, ConvertRotation(gyro.attitude), smooth * deltatime);
-    //    }
-    //}
+    public void UpdateOrientation(float deltatime)
+    {
+            float smooth = 1f;
+            qRefObject = Quaternion.Slerp(qRefObject, transform.rotation, smooth * deltatime);
+            qRefGyro = Quaternion.Slerp(qRefGyro, ConvertRotation(gyro.attitude), smooth * deltatime);
+    }
 
 }
