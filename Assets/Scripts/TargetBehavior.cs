@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using Vuforia;
-using System;
+using System.Collections.Generic;
 
 public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
 {
@@ -12,39 +12,30 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
     public Button Gyro;
     public GyroController CameraGyro;
     private TrackableBehaviour mTrackableBehaviour;
+    private Tracker imageTracker;
     bool tracked = false;
 
    // This function should set the state to searching for the trackable
     void ResumeTracking()
     {
-        Tracker imageTracker = TrackerManager.Instance.GetTracker<ObjectTracker>();
-        imageTracker.Start();
-	GyroOff();
 	tracked = false;
 	OnTrackingLost();
+        imageTracker.Start();
+	GyroOff();
     }
 
     void PauseTracking()
     {
-        Tracker imageTracker = TrackerManager.Instance.GetTracker<ObjectTracker>();
         imageTracker.Stop();
-        Debug.Log("Pause Tracking");
-        GyroOn();
+    //    Debug.Log("Pause Tracking");
     }
     // should reproduce the tracking Extended State if possible otherwise it goes to
     // Tracking Lost State.
     void GyroOn()
     {
         CameraGyro.Paused = false;
-	Debug.Log("Gyro On");
-	if (tracked) 
-	{ 
-	   CameraGyro.ResetOrientation();
-	}
-	else {
-	    ResumeTracking();
-	}
-	    
+	Debug.Log("Gyro On Extended Pause Traking");
+	PauseTracking();
     }
     void GyroOff()
     {
@@ -65,7 +56,14 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
         }
         CameraGyro.Paused = true;
         CameraGyro.ControlledObject = GameObject.FindWithTag("MainCamera");
-       
+        imageTracker = TrackerManager.Instance.GetTracker<ObjectTracker>();
+
+        // Query the StateManager to retrieve the list of
+        // currently 'active' trackables 
+        //(i.e. the ones currently being tracked by Vuforia)
+
+        // Iterate through the list of active trackables
+        Debug.Log("List of trackables currently active (tracked): ");
         //Debug.Assert(CameraGyro.ControlledObject != null); 
         if (CameraGyro.ControlledObject != null)
         {
@@ -77,13 +75,23 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
         }
 
         mTrackableBehaviour = GetComponent<TrackableBehaviour>();
+        Debug.Log("Image type " + mTrackableBehaviour.GetType());
+        if (mTrackableBehaviour != null)
+        {
+            Debug.Log("ot not null");
+        }
+        else
+        {
+            Debug.Log("ot is null");
+        }
         if (mTrackableBehaviour)
         {
             mTrackableBehaviour.RegisterTrackableEventHandler(this);
+            Debug.Log("Trackable behaviour found");
         }
         
         TrackButton.onClick.AddListener(ResumeTracking);
-	Gyro.onClick.AddListener(PauseTracking);
+	Gyro.onClick.AddListener(GyroOn);
     }
 
     //public void OnTrackableStateChanged(
@@ -122,6 +130,7 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
         switch (newStatus)
         {
             case TrackableBehaviour.Status.TRACKED:
+            case TrackableBehaviour.Status.DETECTED:
                 // Target in camera
                 // TODO-2.b 
                 // Recalibrate reference quaternions at GyroController
@@ -146,6 +155,7 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
                 // Target not in camera, but Vuforia can still calculate position and orientation
                 //   and update ARCamera.
                 // TODO-2.b
+		GyroOn();
                 CameraGyro.Paused = false;
                // PauseTracking();
                 Debug.Log("Extended Tracking");
@@ -153,11 +163,9 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
                 break;
 	    case TrackableBehaviour.Status.NOT_FOUND:
 	    case TrackableBehaviour.Status.UNKNOWN:
-	    case TrackableBehaviour.Status.DETECTED:
         default:
-			OnTrackingLost();
-			CameraGyro.Paused = true;
-            TrackButton.image.color = new Color(1, 0.1f, 0.1f, 0.5f);
+		ResumeTracking();
+            	TrackButton.image.color = new Color(1, 0.1f, 0.1f, 0.5f);
             break;
         }
         
