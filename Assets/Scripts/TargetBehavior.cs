@@ -76,13 +76,17 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
 
         mTrackableBehaviour = GetComponent<TrackableBehaviour>();
         Debug.Log("Image type " + mTrackableBehaviour.GetType());
+        //extendedTrackable
+        //extendedTrackable et = GetComponent<ExtendedTrackable>();
+        //ObjectTarget et = GetComponent<ObjectTarget>();
+        //et.StartExtendedTracking();
         if (mTrackableBehaviour != null)
         {
-            Debug.Log("ot not null");
+            Debug.Log("mTrackable not null");
         }
         else
         {
-            Debug.Log("ot is null");
+            Debug.Log("mTrackable is null");
         }
         if (mTrackableBehaviour)
         {
@@ -91,7 +95,7 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
         }
         
         TrackButton.onClick.AddListener(ResumeTracking);
-	Gyro.onClick.AddListener(GyroOn);
+	Gyro.onClick.AddListener(GyroOff);
     }
 
     //public void OnTrackableStateChanged(
@@ -152,21 +156,22 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
                 TrackButton.image.color = new Color(0.4f, 1, 0.7f, 0.5f);
                 break;
             case TrackableBehaviour.Status.EXTENDED_TRACKED:
+	    case TrackableBehaviour.Status.NOT_FOUND:
+	    case TrackableBehaviour.Status.UNKNOWN:
+        	default:
                 // Target not in camera, but Vuforia can still calculate position and orientation
                 //   and update ARCamera.
                 // TODO-2.b
-		GyroOn();
-                CameraGyro.Paused = false;
-               // PauseTracking();
-                Debug.Log("Extended Tracking");
-                TrackButton.image.color = new Color(0.7f, 0.5f, 0.1f, 0.5f);
-                break;
-	    case TrackableBehaviour.Status.NOT_FOUND:
-	    case TrackableBehaviour.Status.UNKNOWN:
-        default:
-		ResumeTracking();
-            	TrackButton.image.color = new Color(1, 0.1f, 0.1f, 0.5f);
-            break;
+		if ( tracked && CameraGyro.Paused) {
+			GyroOn();
+                	Debug.Log("Turn Gyro On");
+                	TrackButton.image.color = new Color(0.7f, 0.5f, 0.1f, 0.5f);
+		}
+		else if (!tracked) {
+			ResumeTracking();
+            		TrackButton.image.color = new Color(1.0f, 0.1f, 0.1f, 0.5f);
+		}
+            	break;
         }
         
     }
