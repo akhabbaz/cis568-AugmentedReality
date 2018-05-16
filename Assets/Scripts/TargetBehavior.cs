@@ -93,7 +93,16 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
             mTrackableBehaviour.RegisterTrackableEventHandler(this);
             Debug.Log("Trackable behaviour found");
         }
-        
+        GameObject g = GameObject.Find("Mobile_Global");
+        MobileShooter ms = g.GetComponent<MobileShooter>();
+        if (ms != null)
+        {
+            Debug.Log("MobileShooter Found");
+        }
+        else
+        {
+            Debug.Log("No Mobile Shooter Found"); 
+        }
         TrackButton.onClick.AddListener(ResumeTracking);
 	Gyro.onClick.AddListener(GyroOff);
     }
@@ -141,7 +150,7 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
                 //   and switch the Control of the camera between Vuforia and GyroController.
                 // You may want to toggle GyroController.Paused .
 		if (tracked) {
-		     CameraGyro.UpdateOrientation(1.0f);
+		     CameraGyro.UpdateOrientation(0.5f);
 		     Debug.Log("Orientation updated");
 		}
 		else{
