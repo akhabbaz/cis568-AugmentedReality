@@ -18,7 +18,7 @@ public class MobileShooter : MonoBehaviour {
     float mousedowned_time;
 
     bool bMouseDown = false;
-    float ballSpeedFixed = 25f;
+    float ballSpeedFixed = 50.0f;
 
     // Use this for initialization
     void Start()
@@ -81,11 +81,24 @@ public class MobileShooter : MonoBehaviour {
         // You may want to use a random nice color so there is one!
         Color color = Random.ColorHSV(0f, 1f, 0.5f, 1f, 0.5f, 1f, 1f, 1f);
         Vector3 color_v = new Vector3(color.r, color.g, color.b);
-
-	    GameObject ball = PhotonNetwork.Instantiate("ball", new Vector3(0,0,0), 
+        Transform tr = ARCamera.GetComponent<Transform>();
+	    GameObject ball = PhotonNetwork.Instantiate("ball", tr.position, 
 			    Quaternion.identity, 0);
+
         BallBehavior bb = ball.GetComponent<BallBehavior>();
-        bb.RPCInitialize(velocity, color_v);
+        PhotonView photonView = bb.GetComponent<PhotonView>();
+        if (photonView != null)
+        {
+            Debug.Log("Photon View is valid");
+        }
+        else
+        {
+            Debug.Log("PhotonView is null");
+        }
+        //PhotonView photonView =PhotonView.Get(this);
+        Debug.Log("Velocity :" + velocity);
+        photonView.RPC("RPCInitialize", PhotonTargets.All, velocity, color_v);
+        //bb.RPCInitialize(velocity, color_v);
         // TODO-2.c PhotonNetwork.Instantiate to shoot a ball!
         // You may want to initialize a RPC function call to RPCInitialize() 
         //   (See BallBehavior.cs) to set the velocity and color

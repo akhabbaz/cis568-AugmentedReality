@@ -34,8 +34,8 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
     void GyroOn()
     {
         CameraGyro.Paused = false;
-	Debug.Log("Gyro On Extended Pause Traking");
-	PauseTracking();
+	  Debug.Log("Gyro On Extended Pause Traking");
+	  PauseTracking();
     }
     void GyroOff()
     {
@@ -164,7 +164,7 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
 		}
                 TrackButton.image.color = new Color(0.4f, 1, 0.7f, 0.5f);
                 break;
-            case TrackableBehaviour.Status.EXTENDED_TRACKED:
+        case TrackableBehaviour.Status.EXTENDED_TRACKED:
 	    case TrackableBehaviour.Status.NOT_FOUND:
 	    case TrackableBehaviour.Status.UNKNOWN:
         	default:
