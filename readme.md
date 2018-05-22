@@ -3,10 +3,19 @@ Start the device vertical when the phone.
 
 The transformation is correct as it stands.:
 
+Part A--Getting the Cube to Rotate
+----------------------------------
 
 The first part getting the cube to rotate with the device works.  I was able to
 transfer the mobile build to my kindle Fire and run it from the kindle.  That all
-worked.  There is a movie of this in the directory.  
+worked.  Some steps along the way were to first to create a room and then get the
+mobile device to find the room.  Alot of that was getting the Android device to be a
+development device and loading unity on it.  That is described below.  The next part
+was to Get a given cube to rotate with the With kindle fire.  There was the transform
+and the rotation matrix.  The change in rotation of the android device made it onto
+the cube projected to the screen.
+some experimentation, it turned out that the convention within the code was correct. 
+There is a movie of this in the directory.  
 
 
 Using an HDFire as a Android Device
@@ -58,11 +67,15 @@ Also I think you can't deploy this without doing so with unity.  I think librari
 are also used in addition to the apk.  Every time I deployed successfully I did it in
 Unity.
 
+Part B  Using Vuforia, PUN and getting a SPLAT
+----------------------------------------------
 
-Using Vuforia
--------------
+With the android connected, the debug log helped a great deal in figuring out what
+was running on the android.  The first part was to get the images to register.
 
-This basically worked as advertised.  I made the images larger so that when the
+The first step was to get the target joined.  The same code from above worked here.
+
+Next, the images had to be made large enough and had to track.  I made the images larger so that when the
 mobile version ran on the PC, the target image filled up the frame.  Similarly for
 the PC.  The provided image, for some reason, would not download to the mobile device
 and I was getting an error-- image not found.  The Behaviour tracking status went
@@ -73,3 +86,16 @@ debug log said that image made it to the target. With that I was able to see on
 Change Status go from track to untracked to extended.
 
 
+The extended mode in Vuforia analyses the current scene for landmarks and when they
+are found, it uses  these visual landmarks as 3D reference points.  Here we want to
+use the Gyroscope instead.  What I did was in the beginning the target was untracked
+and not in sync with the real world. The Camera was set as the controlled object.
+Once the two images could sync the mode became
+tracked.  The first thing that happened was that the camera orientation was set to be
+modified by the  gyroscope.  Afterwards the Gyro's update function was activated
+(pause off)  and the video tracker of vuforia was shut off.  Now the gyro set the
+orientation completely.  
+
+
+There were two buttons used to help debugging.    The Track button changed color with 
+the different states.  If pressed, 
