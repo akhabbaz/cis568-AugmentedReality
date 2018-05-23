@@ -18,6 +18,14 @@ public class GyroController : MonoBehaviour
     Quaternion qRefObject = Quaternion.identity;
     Quaternion qRefGyro = Quaternion.identity;
     Gyroscope gyro;
+    // velocity of the camera
+    Vector3 vel;
+    // change position Dot of the camera
+    Vector3 posDot;
+    // velocity dot of the camera
+    Vector3 velDot;
+    // last interval's acceleration
+    Vector3 priorAccel;
 
     GameObject controlledObject;
 
@@ -33,6 +41,26 @@ public class GyroController : MonoBehaviour
         gyro.enabled = true;
         gyro.updateInterval = 0.01f;
         Debug.Log("Gyro initialized update interval = " + gyro.updateInterval);
+	vel = new Vector3(0.0f);
+	posDot = new Vector3(0.0f);
+	velDot = new Vector3(0.0f);
+	priorAccel = new Vector3(0.0f);
+    }
+    // updates the dynamics
+    void upDateDynamics()
+    {
+    	posDot = vel;
+	velDot = gyro.userAcceleration;
+    }
+    //updates the position and the velocity
+    void updatePositionVelocity()
+    {
+    	Vector3 vnext = vel + velDot * Time.deltaTime;
+	// R2K for position
+	controlledObject.transform.position += 0.5f * (vnext + posDot) *
+	Time.deltaTime;
+	// Runge Kutta 2 for acceleration too 
+	vel += 0.5f * (priorAccel + velDot) * Time.deltaTime;
     }
 
     void OnGUI()
@@ -55,10 +83,16 @@ public class GyroController : MonoBehaviour
     {
         return new Quaternion(q.x, q.y,  -q.z, -q.w);
     }
-
+    private static Vector3 ConvertRotation(Vector3 input)
+    {
+        return new Vector3(input.x, input.y, -input.z);
+    }
 
     // Update is called once per frame
     void Update()
+    {
+    }
+    void FixedUpdate()
     {
         if (controlledObject != null && !Paused)
         {
@@ -66,10 +100,20 @@ public class GyroController : MonoBehaviour
             //   rotate the camera or cube based on qRefObject, qRefGyro and current 
             //   data from gyroscope
             Quaternion deltaR = Quaternion.Inverse(qRefGyro) * ConvertRotation(gyro.attitude);
-            
-            controlledObject.transform.rotation = qRefObject * deltaR;
+            Vector3 angularRate = ConvertRotation(gyro.rotationRateUnbiased);
+    	    Quaternion update = Quaternion.AngleAxis(-Time.deltaTime *
+	    angularRate.magnitude * Mathf.Rad2Deg , angularRate);
+	    // for part1 and 2 uncomment out this line and the controlled object gets
+	    // updated using gyro.attitude.  As it stands the update function uses
+	    // the angularRateUnbiased function to get an improved measure of the
+	    // rotation rate. 
+             //controlledObject.transform.rotation = qRefObject * deltaR;
+            controlledObject.transform.rotation =  controlledObject.transform.rotation * update;
+	    updateDynamics();
+	    updatePositionVelocity();
         }
     }
+
 
     public void ResetOrientation()
     {
@@ -87,6 +131,7 @@ public class GyroController : MonoBehaviour
             float smooth = 1f;
             qRefObject = Quaternion.Slerp(qRefObject, transform.rotation, smooth * deltatime);
             qRefGyro = Quaternion.Slerp(qRefGyro, ConvertRotation(gyro.attitude), smooth * deltatime);
+            
     }
 
 }

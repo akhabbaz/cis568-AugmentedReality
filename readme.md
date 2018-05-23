@@ -78,24 +78,99 @@ The first step was to get the target joined.  The same code from above worked he
 Next, the images had to be made large enough and had to track.  I made the images larger so that when the
 mobile version ran on the PC, the target image filled up the frame.  Similarly for
 the PC.  The provided image, for some reason, would not download to the mobile device
-and I was getting an error-- image not found.  The Behaviour tracking status went
+and I was getting an error-- image not found.  This I saw through the debug prompts. The Behaviour tracking status went
 from unknown and would not trigger state changes.  I went back to my first version
 and just added the network stuff and that was no different.  I changed the image to
 Astronaut, made sure it filled up the scene.  I picked the astronaut because the
 debug log said that image made it to the target. With that I was able to see on
-Change Status go from track to untracked to extended.
-
+Change Status go from track to untracked to extended.  Also the debug log stated the
+image was found.
+![](debug3.PNG)
 
 The extended mode in Vuforia analyses the current scene for landmarks and when they
 are found, it uses  these visual landmarks as 3D reference points.  Here we want to
-use the Gyroscope instead.  What I did was in the beginning the target was untracked
-and not in sync with the real world. The Camera was set as the controlled object.
+use the Gyroscope instead. Actually we are not interested in extended Track since
+that uses visual landmarks from the environment.    What I did was in the beginning the target was untracked
+and not in sync with the real world.
 Once the two images could sync the mode became
-tracked.  The first thing that happened was that the camera orientation was set to be
-modified by the  gyroscope.  Afterwards the Gyro's update function was activated
-(pause off)  and the video tracker of vuforia was shut off.  Now the gyro set the
-orientation completely.  
+tracked.  Then the Gyro was reset, which essentially set the reference location of
+the ARCamera and the Gyro.  Now, with Pause false, each time the Gyro moved the
+Camera AR tracked.  This never falls out of tracked status.
+
+This is all done in TargetBehavior.cs, which is the Event Handler.  To understand
+better the logic, I removed the DefaultEventHandler and put in the useful routines in
+TargetBehaviour.cs.  This way there is only one loop for events.
+
+The Track button will reset the visual tracking, allowing vuforia to align the images
+and track again.  This is used for resetting in case the Gyro's accumulated errors
+get too large.
+
+The "Gyro Off Button" disables the Gyro update.  This is useful to stop all updates
+and test if the Gyro is working.
 
 
-There were two buttons used to help debugging.    The Track button changed color with 
-the different states.  If pressed, 
+Evidence that Tracking is working
+----------------------------------
+
+Vuforia's image tracking is working.  When the camera is not tracked and the image
+fills up the screen the mode goes to tracked.  The Target then gets superimposed on
+the screen.  As you tilt the HDFire, the target changes perspective always looking
+like it is in the same location on the image.
+
+
+The Gyro control is also working.  Once the mode goes to extended Tracked or
+untracked the Gyro turns on and the target remains in position.  One can see that the
+perspective stays locked on the target as the HD fire tilts forward and back.  After
+some time, the target drifts.  This can be reset with the Track button.
+
+To test once the Gyro starts, it can be shut off.  Now the Camera AR is not updated
+at all, neither by Vuforia or by the Gyro.  The result is the target stays exactly
+where it started on the screen.
+
+
+
+Mobile Shooter 
+---------------
+
+
+Here the idea was to get the paint ball to fire and appear on the target.  THis is
+working as evidence by the following images:
+
+![](BoardHit.PNG)
+![](DebugLogOnHost.PNG)
+
+The main code that I touched was in MobileShooter.cs called ShootBall(Vector3
+velocity).  I got the ARCamera position using the transform, and then I used that to
+instantiate a ball using PhotonNetwork.Instantiate().  That function will create a
+Ball that is launched and is visible over the network.  The ball itself has a
+PhotonView object attached so that is the one to use to send the Remote Procedure
+call over the network.  To get this to work, on the PaintBall_PC, I also attached a
+PhotonView object.  
+
+
+When the ShootFront Button gets hit, there were two callbacks
+that could respond.  Mobile Shooter.cs had registered that event, and also
+TargetBehavior has that button.  Since only one needs to work, In Target Behaviour,
+that button does not register a call back.
+
+This did not work well for a long time.  It turned out that if one calls the
+photonview on the ball, that was not null.  I thought it may be that Photon can't
+handle Vector3 of Unity; I wrote and registered a script called TransferVector3.
+That turns the vector3 into bytes to be transported.  Then, in the RPC, I used the call 
+photonView.RPC("RPCINitialize", PhotonTargets.All, velocity, color_v).  This worked.
+The debug log shows the velocity, that RPC is initialized, that the ownwership is
+transferred to the master.  Also when balls are launched, they appear cloned on the
+PC as objects. Prior to photonView being attached properly, the balls were visible
+but they had no velocity and no color and did not approach the target correctly.
+Actually if one just launched RPCInitialize on the ball, from the mobile perspective
+the balls Launch correctly, They just never collided with the PC board.
+
+Evidence that the Shooter is working.
+-------------------------------------
+
+The balls get launched with a velocity and a color.  The bebug log also indicates
+that the balls have a velocity.  Once they hit the board, they actually splatter.
+One can get them to splatter both by hitting the front shoot button and also by
+swiping ones finger in the direction of the arrow.  The evidence is that it is easy
+to see splats on the PC.
+
