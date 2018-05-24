@@ -185,7 +185,8 @@ miss depending on the rotation angle.
 Further Developments
 --------------------
 
-
+Improved Rotations
+------------------
 I changed the way that the gyro updates orientation.  I was looking for a way to get
 the internal sensors to better predict the position of the camera, so that when the
 gyro tracked, the target was stable.  Instead of using gyro.attitude,
@@ -228,7 +229,7 @@ currently in Gyrocontroller.cs and it goes as follows:
  helped stabilize the target image when the gyro sets the orientation.  now the image
  is much more stable than when using gyro.attitude.
 
-
+I also added FixedUpdate and that also helped.
 
 
  Adding Position
