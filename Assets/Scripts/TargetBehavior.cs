@@ -55,7 +55,12 @@ public class TargetBehavior : MonoBehaviour, ITrackableEventHandler
 
         }
         CameraGyro.Paused = true;
-        CameraGyro.ControlledObject = GameObject.FindWithTag("MainCamera");
+        CameraGyro.ControlledObject = GameObject.Find("ARCamera");
+        //CameraGyro.ControlledObject = GameObject.FindWithTag("MainCamera");
+        if (CameraGyro.ControlledObject == null)
+        {
+            Debug.Log("ARCamera not found");
+        }
         imageTracker = TrackerManager.Instance.GetTracker<ObjectTracker>();
 
         // Query the StateManager to retrieve the list of

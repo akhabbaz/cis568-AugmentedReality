@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GyroController : MonoBehaviour
 {
@@ -10,14 +11,18 @@ public class GyroController : MonoBehaviour
         {
             controlledObject = value;
             ResetOrientation();
+            //initialPosition = controlledObject.transform.position;
+            //initialAccel = gyro.userAcceleration;
+            //initialOrientation = controlledObject.transform.rotation;
         }
     }
 
     public bool Paused { get; set; }
-
+    public Button ResetPosition;
     Quaternion qRefObject = Quaternion.identity;
     Quaternion qRefGyro = Quaternion.identity;
     Gyroscope gyro;
+   // private Rigidbody rb;
     // velocity of the camera
     Vector3 vel;
     // change position Dot of the camera
@@ -26,7 +31,10 @@ public class GyroController : MonoBehaviour
     Vector3 velDot;
     // last interval's acceleration
     Vector3 priorAccel;
-
+    Vector3 initialAccel;
+    Vector3 initialPosition;
+    Quaternion initialOrientation;
+    float thrust = 10.0f;
     GameObject controlledObject;
 
     void Awake()
@@ -41,28 +49,36 @@ public class GyroController : MonoBehaviour
         gyro.enabled = true;
         gyro.updateInterval = 0.01f;
         Debug.Log("Gyro initialized update interval = " + gyro.updateInterval);
-	vel = new Vector3(0.0f);
-	posDot = new Vector3(0.0f);
-	velDot = new Vector3(0.0f);
-	priorAccel = new Vector3(0.0f);
+	   vel = new Vector3();
+	   posDot = new Vector3();
+	   velDot = new Vector3();
+	    priorAccel = new Vector3();
+        //ResetPosition.onClick.AddListener(ZeroPosition);
     }
     // updates the dynamics
-    void upDateDynamics()
+    void UpdateDynamics()
     {
     	posDot = vel;
-	velDot = gyro.userAcceleration;
+        velDot = thrust * (-gyro.userAcceleration + initialAccel);
     }
     //updates the position and the velocity
-    void updatePositionVelocity()
+
+    void UpdatePositionVelocity()
     {
     	Vector3 vnext = vel + velDot * Time.deltaTime;
 	// R2K for position
 	controlledObject.transform.position += 0.5f * (vnext + posDot) *
 	Time.deltaTime;
 	// Runge Kutta 2 for acceleration too 
-	vel += 0.5f * (priorAccel + velDot) * Time.deltaTime;
+	vel += 1.0f * (velDot) * Time.deltaTime;
+    priorAccel = velDot;
     }
-
+    void ZeroPosition()
+    {
+        controlledObject.transform.position = initialPosition;
+        controlledObject.transform.rotation = initialOrientation;
+        vel = new Vector3();
+    }
     void OnGUI()
     {
         GUILayout.Label("");
@@ -74,6 +90,11 @@ public class GyroController : MonoBehaviour
         GUILayout.Label("Gyroscope userAcceleration : " + gyro.userAcceleration);
         GUILayout.Label("Ref camera rotation:" + qRefObject);
         GUILayout.Label("Ref gyro attitude:" + qRefGyro);
+        if (ControlledObject != null)
+        {
+            GUILayout.Label("Position of Object" + ControlledObject.transform.position);
+            GUILayout.Label("Velocity of Object" + vel);
+        }
     }
 
     // LOOK-1.d:
@@ -109,8 +130,9 @@ public class GyroController : MonoBehaviour
 	    // rotation rate. 
              //controlledObject.transform.rotation = qRefObject * deltaR;
             controlledObject.transform.rotation =  controlledObject.transform.rotation * update;
-	    updateDynamics();
-	    updatePositionVelocity();
+          //   UpdateDynamics();
+           // UpdatePositionVelocity();
+            //rb.AddForce(gyro.userAcceleration * thrust);
         }
     }
 
